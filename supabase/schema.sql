@@ -50,10 +50,13 @@ create type incident_status as enum (
 create table if not exists incidents (
   id uuid primary key default uuid_generate_v4(),
   created_at timestamptz default now(),
+  updated_at timestamptz default now(),
   title text not null,
   description text not null,
   category incident_category not null,
   status incident_status not null default 'pending_review',
+  
+
 
   -- location
   state_id int references states(id),
@@ -109,5 +112,19 @@ create policy "anyone can attach media on submit"
   on incident_media for insert
   with check (true);
 
+-- Performance indexes
+create index if not exists idx_incidents_state
+on incidents(state_id);
+
+create index if not exists idx_incidents_lga
+on incidents(lga_id);
+
+create index if not exists idx_incidents_polling_unit
+on incidents(polling_unit_id);
+
+create index if not exists idx_incidents_status
+on incidents(status);
 -- Moderator updates (status changes, flagging) should go through a service-role key
 -- (server-side only, never exposed to the browser) — no public policy needed for update/delete.
+create index if not exists idx_polling_units_ward
+on polling_units(ward_id);
