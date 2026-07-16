@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 import type { IncidentMedia } from '@/components/admin/types';
 
 const SIGNED_URL_TTL_SECONDS = 60 * 60;
@@ -12,6 +12,7 @@ export async function resolveMediaUrls(
 ): Promise<(IncidentMedia & { url: string | null })[]> {
   if (media.length === 0) return [];
 
+  const supabaseAdmin = createSupabaseAdminClient();
   const { data, error } = await supabaseAdmin.storage
     .from('incident-media')
     .createSignedUrls(

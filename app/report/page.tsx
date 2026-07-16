@@ -19,9 +19,27 @@ export default function ReportPage() {
   const [isAnonymous, setIsAnonymous] = useState(true);
   const [contact, setContact] = useState('');
   const [location, setLocation] = useState<LocationValue>(EMPTY_LOCATION);
+  const [coords, setCoords] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [geoStatus, setGeoStatus] = useState<'idle' | 'locating' | 'error'>('idle');
   const [files, setFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+
+  function handleUseLocation() {
+    if (!navigator.geolocation) {
+      setGeoStatus('error');
+      return;
+    }
+    setGeoStatus('locating');
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setCoords({ latitude: position.coords.latitude, longitude: position.coords.longitude });
+        setGeoStatus('idle');
+      },
+      () => setGeoStatus('error'),
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -56,6 +74,8 @@ export default function ReportPage() {
       reporter_contact: isAnonymous ? null : contact,
       status: 'pending_review',
       ...location,
+      latitude: coords?.latitude ?? null,
+      longitude: coords?.longitude ?? null,
     });
 
     if (error) {
@@ -78,6 +98,8 @@ export default function ReportPage() {
     setDescription('');
     setContact('');
     setLocation(EMPTY_LOCATION);
+    setCoords(null);
+    setGeoStatus('idle');
     setFiles([]);
     if (fileInputRef.current) fileInputRef.current.value = '';
   }
@@ -126,6 +148,28 @@ export default function ReportPage() {
         </label>
 
         <LocationPicker onChange={setLocation} />
+
+        <div className="geolocation-row">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={handleUseLocation}
+            disabled={geoStatus === 'locating'}
+          >
+            {geoStatus === 'locating' ? 'Locating…' : 'Use My Current Location'}
+          </button>
+          {coords && (
+            <span className="muted">
+              Location captured ({coords.latitude.toFixed(4)}, {coords.longitude.toFixed(4)})
+            </span>
+          )}
+          {geoStatus === 'error' && (
+            <span className="error">Couldn&rsquo;t get your location. You can still submit without it.</span>
+          )}
+        </div>
+        <p className="muted">
+          Optional — pins your report on the public map. Only works if you&rsquo;re reporting from the scene.
+        </p>
 
         <label>
           Photos (optional)

@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 import AdminHeader from '@/components/admin/AdminHeader';
 import StatsSummary from '@/components/admin/StatsSummary';
 import ReportCard from '@/components/admin/ReportCard';
@@ -22,6 +22,7 @@ const STATUS_GROUPS = [
 // bypasses that; the moderator's own session already gated this page via
 // middleware.ts.
 async function loadIncidents(): Promise<IncidentWithRelations[]> {
+  const supabaseAdmin = createSupabaseAdminClient();
   const { data, error } = await supabaseAdmin
     .from('incidents')
     .select(

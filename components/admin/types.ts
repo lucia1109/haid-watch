@@ -1,3 +1,5 @@
+export { formatLocation } from '@/lib/format-location';
+
 export type IncidentStatus = 'pending_review' | 'published' | 'flagged' | 'rejected';
 
 export type IncidentMedia = {
@@ -26,14 +28,3 @@ export const STATUS_LABELS: Record<IncidentStatus, string> = {
   flagged: 'Flagged',
   rejected: 'Rejected',
 };
-
-export function formatLocation(incident: IncidentWithRelations): string {
-  const parts = [
-    incident.states?.name,
-    incident.lgas?.name,
-    incident.wards?.name,
-    incident.polling_units?.name,
-  ].filter(Boolean);
-
-  return parts.length > 0 ? parts.join(' › ') : 'No location provided';
-}

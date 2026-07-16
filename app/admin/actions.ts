@@ -3,7 +3,7 @@
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 
 const VALID_STATUSES = ['pending_review', 'published', 'flagged', 'rejected'] as const;
 type IncidentStatus = (typeof VALID_STATUSES)[number];
@@ -35,6 +35,7 @@ export async function updateIncidentStatus(incidentId: string, status: IncidentS
     throw new Error(`Invalid status: ${status}`);
   }
 
+  const supabaseAdmin = createSupabaseAdminClient();
   const { error } = await supabaseAdmin
     .from('incidents')
     .update({ status })

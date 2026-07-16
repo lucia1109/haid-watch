@@ -110,6 +110,13 @@ main {
   gap: 1rem;
 }
 
+.geolocation-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
 .checkbox-row {
   flex-direction: row !important;
   align-items: center;
@@ -122,6 +129,50 @@ main {
 
 .error {
   color: #b3261e;
+}
+
+.incident-search {
+  max-width: 780px;
+  margin-top: 1.5rem;
+}
+
+.incident-search-controls {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.incident-search-controls input,
+.incident-search-controls select {
+  padding: 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.incident-search-controls input {
+  flex: 1;
+  min-width: 200px;
+}
+
+.incident-search-results {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.incident-search-results li {
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+.incident-search-results h3 {
+  margin: 0 0 0.35rem;
 }
 
 .admin-page {

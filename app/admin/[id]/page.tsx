@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { createSupabaseAdminClient } from '@/lib/supabase-admin';
 import { resolveMediaUrls } from '@/lib/incident-media';
 import { categoryLabel } from '@/lib/categories';
 import AdminHeader from '@/components/admin/AdminHeader';
@@ -7,6 +7,7 @@ import ModerationActions from '@/components/admin/ModerationActions';
 import { formatLocation, STATUS_LABELS, type IncidentWithRelations } from '@/components/admin/types';
 
 async function loadIncident(id: string): Promise<IncidentWithRelations | null> {
+  const supabaseAdmin = createSupabaseAdminClient();
   const { data, error } = await supabaseAdmin
     .from('incidents')
     .select(
