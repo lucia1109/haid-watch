@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import LocationPicker, { LocationValue } from '@/components/LocationPicker';
+import { CATEGORIES } from '@/lib/categories';
 
 const EMPTY_LOCATION: LocationValue = {
   state_id: null,
@@ -11,14 +12,6 @@ const EMPTY_LOCATION: LocationValue = {
   polling_unit_id: null,
 };
 
-const CATEGORIES = [
-  { value: 'election_incident', label: 'Election Incident' },
-  { value: 'security_concern', label: 'Security Concern' },
-  { value: 'community_disturbance', label: 'Community Disturbance' },
-  { value: 'voter_intimidation', label: 'Voter Intimidation' },
-  { value: 'public_safety', label: 'Public Safety Observation' },
-];
-
 export default function ReportPage() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -26,13 +19,36 @@ export default function ReportPage() {
   const [isAnonymous, setIsAnonymous] = useState(true);
   const [contact, setContact] = useState('');
   const [location, setLocation] = useState<LocationValue>(EMPTY_LOCATION);
+  const [files, setFiles] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setStatus('submitting');
 
+    // Generated up front so it can be used as the storage path prefix and the
+    // incident_media foreign key before the incidents row exists.
+    const incidentId = crypto.randomUUID();
+    const mediaRows: { incident_id: string; storage_path: string; media_type: 'photo' }[] = [];
+
+    for (const file of files) {
+      const path = `${incidentId}/${crypto.randomUUID()}-${file.name.replace(/\s+/g, '-')}`;
+      const { error: uploadError } = await supabase.storage
+        .from('incident-media')
+        .upload(path, file);
+
+      if (uploadError) {
+        console.error(uploadError);
+        setStatus('error');
+        return;
+      }
+
+      mediaRows.push({ incident_id: incidentId, storage_path: path, media_type: 'photo' });
+    }
+
     const { error } = await supabase.from('incidents').insert({
+      id: incidentId,
       title,
       description,
       category,
@@ -48,11 +64,22 @@ export default function ReportPage() {
       return;
     }
 
+    if (mediaRows.length > 0) {
+      const { error: mediaError } = await supabase.from('incident_media').insert(mediaRows);
+      if (mediaError) {
+        console.error(mediaError);
+        setStatus('error');
+        return;
+      }
+    }
+
     setStatus('success');
     setTitle('');
     setDescription('');
     setContact('');
     setLocation(EMPTY_LOCATION);
+    setFiles([]);
+    if (fileInputRef.current) fileInputRef.current.value = '';
   }
 
   if (status === 'success') {
@@ -61,7 +88,6 @@ export default function ReportPage() {
         <h1>Thank you</h1>
         <p>
           Your report has been submitted and will appear on the public map once reviewed.
-          Media uploads are being added in the next iteration of this form.
         </p>
       </section>
     );
@@ -100,6 +126,20 @@ export default function ReportPage() {
         </label>
 
         <LocationPicker onChange={setLocation} />
+
+        <label>
+          Photos (optional)
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
+          />
+        </label>
+        {files.length > 0 && (
+          <p className="muted">{files.length} photo{files.length > 1 ? 's' : ''} selected</p>
+        )}
 
         <label className="checkbox-row">
           <input

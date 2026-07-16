@@ -133,6 +133,12 @@ create policy "anyone can attach media on submit"
   on incident_media for insert
   with check (true);
 
+-- Storage: the incident-media bucket lives in the storage schema, not public,
+-- so it needs its own RLS policy on storage.objects to allow anon uploads.
+create policy "anyone can upload incident media"
+  on storage.objects for insert
+  with check (bucket_id = 'incident-media');
+
 -- Performance indexes
 create index if not exists idx_incidents_state
 on incidents(state_id);
