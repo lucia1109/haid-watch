@@ -104,6 +104,12 @@ main {
   font-weight: 400;
 }
 
+.location-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 .checkbox-row {
   flex-direction: row !important;
   align-items: center;

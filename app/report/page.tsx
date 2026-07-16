@@ -2,6 +2,14 @@
 
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import LocationPicker, { LocationValue } from '@/components/LocationPicker';
+
+const EMPTY_LOCATION: LocationValue = {
+  state_id: null,
+  lga_id: null,
+  ward_id: null,
+  polling_unit_id: null,
+};
 
 const CATEGORIES = [
   { value: 'election_incident', label: 'Election Incident' },
@@ -17,6 +25,7 @@ export default function ReportPage() {
   const [category, setCategory] = useState(CATEGORIES[0].value);
   const [isAnonymous, setIsAnonymous] = useState(true);
   const [contact, setContact] = useState('');
+  const [location, setLocation] = useState<LocationValue>(EMPTY_LOCATION);
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
 
   async function handleSubmit(e: React.FormEvent) {
@@ -30,6 +39,7 @@ export default function ReportPage() {
       is_anonymous: isAnonymous,
       reporter_contact: isAnonymous ? null : contact,
       status: 'pending_review',
+      ...location,
     });
 
     if (error) {
@@ -42,6 +52,7 @@ export default function ReportPage() {
     setTitle('');
     setDescription('');
     setContact('');
+    setLocation(EMPTY_LOCATION);
   }
 
   if (status === 'success') {
@@ -50,8 +61,7 @@ export default function ReportPage() {
         <h1>Thank you</h1>
         <p>
           Your report has been submitted and will appear on the public map once reviewed.
-          Location tagging (State / LGA / Ward / Polling Unit) and media uploads are being
-          added in the next iteration of this form.
+          Media uploads are being added in the next iteration of this form.
         </p>
       </section>
     );
@@ -88,6 +98,8 @@ export default function ReportPage() {
             maxLength={2000}
           />
         </label>
+
+        <LocationPicker onChange={setLocation} />
 
         <label className="checkbox-row">
           <input

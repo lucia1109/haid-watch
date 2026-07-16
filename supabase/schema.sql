@@ -86,6 +86,27 @@ create table if not exists incident_media (
 -- Row Level Security
 alter table incidents enable row level security;
 alter table incident_media enable row level security;
+alter table states enable row level security;
+alter table lgas enable row level security;
+alter table wards enable row level security;
+alter table polling_units enable row level security;
+
+-- Location hierarchy is public reference data — anyone can read it
+create policy "public read states"
+  on states for select
+  using (true);
+
+create policy "public read lgas"
+  on lgas for select
+  using (true);
+
+create policy "public read wards"
+  on wards for select
+  using (true);
+
+create policy "public read polling units"
+  on polling_units for select
+  using (true);
 
 -- Public can read only published incidents
 create policy "public read published incidents"
