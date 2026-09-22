@@ -53,7 +53,19 @@ export default function IncidentMap() {
         ) : null
       ))}
       {!loading && incidents.length === 0 && (
-        <p style={{ position: 'absolute', top: 10, left: 10, zIndex: 1000 }}>
+        <p
+          style={{
+            position: 'absolute',
+            top: 10,
+            right: 10,
+            zIndex: 1000,
+            background: 'white',
+            padding: '0.5rem 0.75rem',
+            borderRadius: 6,
+            border: '1px solid var(--color-border)',
+            maxWidth: '220px',
+          }}
+        >
           No published reports with location data yet.
         </p>
       )}

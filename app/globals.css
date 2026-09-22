@@ -364,3 +364,76 @@ main {
   color: #777;
   border-top: 1px solid var(--color-border);
 }
+
+/* Mobile — most reports/moderation happens on a phone, so this is the
+   primary target, not an afterthought for a desktop-first layout. */
+@media (max-width: 640px) {
+  main {
+    padding: 1.5rem 1rem;
+  }
+
+  .site-header {
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    padding: 1rem;
+  }
+
+  .site-header nav a:first-child {
+    margin-left: 0;
+  }
+
+  .site-header nav a {
+    margin-left: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .hero h1 {
+    font-size: 1.6rem;
+  }
+
+  .cta-row {
+    flex-direction: column;
+  }
+
+  .cta-row .btn {
+    text-align: center;
+  }
+
+  .geolocation-row {
+    align-items: flex-start;
+  }
+
+  .incident-search-controls input {
+    min-width: 0;
+  }
+
+  .admin-header {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .admin-header-title {
+    font-size: 1.1rem;
+  }
+
+  .report-detail {
+    padding: 1rem;
+  }
+
+  .report-detail-header {
+    flex-wrap: wrap;
+  }
+
+  .moderation-actions {
+    flex-direction: column;
+  }
+
+  .moderation-actions form {
+    width: 100%;
+  }
+
+  .moderation-actions .btn {
+    width: 100%;
+    text-align: center;
+  }
+}
