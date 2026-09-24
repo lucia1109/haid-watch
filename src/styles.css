@@ -1,0 +1,129 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * HAID Watch design system — editorial civic-tech.
+ * Warm paper background, ink text, deep green primary, amber accent.
+ * Serif display (Fraunces) + clean sans body (Public Sans).
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-status-pending: var(--status-pending);
+  --color-status-pending-foreground: var(--status-pending-foreground);
+  --color-status-published: var(--status-published);
+  --color-status-published-foreground: var(--status-published-foreground);
+  --color-status-flagged: var(--status-flagged);
+  --color-status-flagged-foreground: var(--status-flagged-foreground);
+  --color-status-rejected: var(--status-rejected);
+  --color-status-rejected-foreground: var(--status-rejected-foreground);
+}
+
+@theme {
+  --font-display: "Fraunces", Georgia, serif;
+  --font-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+  --shadow-card: 0 1px 2px oklch(0.22 0.02 260 / 0.04), 0 8px 24px -12px oklch(0.22 0.02 260 / 0.08);
+  --shadow-lifted: 0 2px 4px oklch(0.22 0.02 260 / 0.05), 0 16px 40px -16px oklch(0.22 0.02 260 / 0.14);
+  --animate-fade-up: fade-up 0.5s ease-out both;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+:root {
+  --radius: 0.5rem;
+  --background: oklch(0.976 0.006 95);
+  --foreground: oklch(0.24 0.025 265);
+  --card: oklch(0.995 0.003 95);
+  --card-foreground: oklch(0.24 0.025 265);
+  --popover: oklch(0.995 0.003 95);
+  --popover-foreground: oklch(0.24 0.025 265);
+  --primary: oklch(0.43 0.075 168);
+  --primary-foreground: oklch(0.98 0.005 95);
+  --secondary: oklch(0.94 0.012 95);
+  --secondary-foreground: oklch(0.35 0.05 168);
+  --muted: oklch(0.955 0.008 95);
+  --muted-foreground: oklch(0.5 0.02 265);
+  --accent: oklch(0.78 0.12 82);
+  --accent-foreground: oklch(0.28 0.04 265);
+  --destructive: oklch(0.52 0.19 27);
+  --destructive-foreground: oklch(0.98 0.005 95);
+  --border: oklch(0.9 0.008 95);
+  --input: oklch(0.88 0.008 95);
+  --ring: oklch(0.43 0.075 168);
+  --status-pending: oklch(0.94 0.05 90);
+  --status-pending-foreground: oklch(0.48 0.11 75);
+  --status-published: oklch(0.93 0.04 168);
+  --status-published-foreground: oklch(0.4 0.08 168);
+  --status-flagged: oklch(0.93 0.06 60);
+  --status-flagged-foreground: oklch(0.5 0.13 50);
+  --status-rejected: oklch(0.93 0.04 27);
+  --status-rejected-foreground: oklch(0.48 0.16 27);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+}
+
+/* Hairline rule used between editorial sections */
+@utility rule {
+  border-top: 1px solid var(--color-border);
+}
+
+/* Leaflet map inherits app typography */
+.leaflet-container {
+  font-family: var(--font-sans);
+  border-radius: var(--radius-lg);
+}
